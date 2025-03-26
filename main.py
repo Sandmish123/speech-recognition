@@ -1,38 +1,37 @@
-import pyaudio
+
+import streamlit as st
+from audio_recorder_streamlit import audio_recorder
+import soundfile as sf
 import numpy as np
-import webrtcvad
 
-# Initialize variables
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 16000
-CHUNK = 1024
+st.title("🎙️ Audio Recorder and Playback")
 
-# Initialize PyAudio
-audio = pyaudio.PyAudio()
-vad = webrtcvad.Vad(3)  # Aggressiveness: 0-3 (higher = more suppression)
+# Record Audio
+audio_bytes = audio_recorder(
+    text="Record your audio",
+    recording_color="#e63946",
+    neutral_color="#457b9d",
+    icon_name="microphone",
+    icon_size="4x",
+    pause_threshold=2.0,
+    sample_rate=41000
+)
 
-# Start the audio stream
-stream = audio.open(format=FORMAT,
-                     channels=CHANNELS,
-                     rate=RATE,
-                     input=True,
-                     frames_per_buffer=CHUNK)
+# Save and Playback Audio
+if audio_bytes:
+    audio_path = "recorded_audio.wav"
+    with open(audio_path, "wb") as f:
+        f.write(audio_bytes)
+    
+    st.success("✅ Audio Recorded Successfully!")
+    st.audio(audio_bytes, format="audio/wav")
 
-print("Listening with Noise Suppression... Press Ctrl+C to stop.")
-
-try:
-    while True:
-        data = stream.read(CHUNK)
-        is_speech = vad.is_speech(data, RATE)
-
-        if is_speech:
-            print("Speech detected!")
-        else:
-            print("No speech detected. Suppressing noise.")
-except KeyboardInterrupt:
-    print("Stopping...")
-finally:
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
+    if st.button("▶️ Play Recorded Audio"):
+        try:
+            data, samplerate = sf.read(audio_path)
+            st.write(f"Playing at {samplerate} Hz")
+            sf.write('temp_audio.wav', data, samplerate)
+            st.audio('temp_audio.wav', format='audio/wav')
+            st.success("Playback completed.")
+        except Exception as e:
+            st.error(f"Error during playback: {e}")
