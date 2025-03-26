@@ -43,6 +43,7 @@ import soundfile as sf
 import numpy as np
 import speech_recognition as sr
 import os
+import tempfile
 
 def transcribe_audio(audio_path):
     recognizer = sr.Recognizer()
