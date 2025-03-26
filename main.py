@@ -73,7 +73,7 @@ audio_bytes = audio_recorder(
 
 # Save and Playback Audio
 if audio_bytes:
-    audio_path = "/home/sandeep-cc/mediapipe/speech-input/recorded_audio.wav"
+    audio_path = "https://github.com/Sandmish123/speech-recognition/blob/main/recorded_audio.wav"
     with open(audio_path, "wb") as f:
         f.write(audio_bytes)
     
