@@ -71,11 +71,17 @@ audio_bytes = audio_recorder(
     sample_rate=41000
 )
 
-# Save and Playback Audio
+# # Save and Playback Audio
+# if audio_bytes:
+#     audio_path = "https://github.com/Sandmish123/speech-recognition/blob/main/recorded_audio.wav"
+#     with open(audio_path, "wb") as f:
+#         f.write(audio_bytes)
+
+# Save and Playback Audio using a temporary file
 if audio_bytes:
-    audio_path = "https://github.com/Sandmish123/speech-recognition/blob/main/recorded_audio.wav"
-    with open(audio_path, "wb") as f:
-        f.write(audio_bytes)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
+        audio_path = temp_audio.name
+        temp_audio.write(audio_bytes)
     
     st.success("✅ Audio Recorded Successfully!")
     st.audio(audio_bytes, format="audio/wav")
