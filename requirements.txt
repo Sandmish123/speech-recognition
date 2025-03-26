@@ -2,6 +2,6 @@ streamlit==1.40.1
 soundfile
 numpy
 audio_recorder_streamlit
-speech_recognition
+SpeechRecognition
 
 
